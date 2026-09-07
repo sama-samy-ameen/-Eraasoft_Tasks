@@ -1,4 +1,3 @@
-
 import json
 import random
 
@@ -10,20 +9,21 @@ class BankAccount:
         self.check_natid = None  #natid=national_id
         self.national_id = None
         
-       #  check=True
-        # while check:
-         #     try:
-          #      if x>0 and x<=2:
-           #         check=False
-            #  except:
-              #     print('Enter a valid input')
+        check=True
+        while check:
+             try:
+              x=int(input('Welcome to the bank system, choose one of the following options:\n1. Create a new account\n2. Access an existing account\n--->  '))
+              if x>0 and x<=2:
+                 check=False
+             except:
+                  print('Enter a valid input')
         
-       #  match x:
-        #      case 1:
+        match x:
+              case 1:
                           
-         #       self.new_account()
-          #    case 2:
-           #     self.access_account()
+                self.new_account()
+              case 2:
+                self.access_account()
 
     def _save_info(self):
         with open("info.json", "w") as file:
@@ -80,10 +80,17 @@ class BankAccount:
             if info[self.check_natid]["password"] == check_pass:
                 self.national_id = self.check_natid
                 print(f"\nWelcome {info[self.check_natid]['name']}!")
+                self.next_step()
+            else:
+                print('national id and password don\'t match')
+        else:
+            print('User not found')
+
+    def next_step(self):
                 while True:
                     try:
-                        select = int(input(f"\n welcome {info[self.check_natid]['name']} , choose what you would like to do:\n1.withdraw\n2.deposit\n3.check your balance\n4.change password\n5.forget password\n6.create credit card\n--->  "))
-                        if 1 <= select <= 5:
+                        select = int(input(f"\n welcome {info[self.check_natid]['name']} , choose what you would like to do:\n1.Withdraw\n2.Deposit\n3.Check your balance\n4.Change password\n5.Forget password\n6.Create credit card\n7.Exit\n--->  "))
+                        if select>0 and select<=7:
                             break
                         else:
                             print('Choose one of the given options')
@@ -93,27 +100,35 @@ class BankAccount:
                 match select:
                     case 1:
                           self.withdraw()
+                          return self.next_step()
                     case 2:
                           self.deposit()
+                          return self.next_step()
                     case 3:
                           print(info[self.check_natid]['balance'])
+                          return self.next_step()
                     case 4:
                           self.change_pass()
+                          return self.next_step()
                     case 5:
                           self.forgot_pass()
+                          return self.next_step()
                     case 6:
                           self.create_card()
-            else:
-                 print('national id and password don\'t match')
-        else:
-             print('User not found')
+                          return self.next_step()
+                    case 7:
+                          return('GoodBye!')
+                           
+                          
+                          
+        
                 
 
     def create_card(self):
         user_id = self.national_id 
         if user_id is None:
             print('Please log in before creating a card.')
-            return
+            return self.loginFrom_card
 
         elif info[user_id]['credit_card']!= None:
             print(f'You already have a credit card: {info[user_id]["credit_card"]}')
@@ -122,7 +137,7 @@ class BankAccount:
         
         else:
             self.card = random.randint(1000, 90000)
-            info[self.check_natid]['credit_card'] = self.card
+            info[user_id]['credit_card'] = self.card
             self._save_info()
             print(f'Credit card created successfully. Your card number is: {self.card}')
 
@@ -314,11 +329,7 @@ class BankAccount:
 
 
 if __name__ == "__main__":
-    acc = BankAccount()
-    acc.access_account()
-    acc.deposit()
-    acc.create_card()
-    acc.pay_credit(50)
+    BankAccount()
 
          
 
